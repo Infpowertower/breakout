@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Breakout game</title>
+    <style>
+        * { padding: 0; margin: 0; }
+        canvas { background: #eee; display: block; margin: 0 auto; }
+    </style>
+</head>
+<body>
+
+<canvas id="myCanvas" width="1200" height="720"></canvas>
+
+<script>
+    let canvas = document.getElementById("myCanvas");
+    let ctx = canvas.getContext("2d");
+
+    let xBall = canvas.width/2;
+    let yBall = 3 * canvas.height/4;
+    let radiusBall = 10;
+    let color = '#' + Math.floor(Math.random()*100) + Math.floor(Math.random()*100) + Math.floor(Math.random()*100);
+    const startSpeed = 0.5;
+    let dxBall = startSpeed;
+    let dyBall = startSpeed;
+
+    function drawBall() {
+        ctx.beginPath();
+        moveBall();
+        ctx.arc(xBall, yBall, radiusBall, 0, Math.PI*2, false);
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    function moveBall() {
+        if (xBall + dxBall - radiusBall >= 0 && xBall + dxBall + radiusBall < canvas.width) {
+            xBall += dxBall;
+        }
+        else {
+            dxBall *= -1;
+        }
+
+        if (yBall + dyBall - radiusBall >= 0 && yBall + dyBall + radiusBall <= canvas.height) {
+            yBall += dyBall;
+        }
+        else {
+            dyBall *= -1;
+        }
+    }
+
+    const paddleHeight = 10;
+    const paddleWidth = 75;
+    const paddleSpeed = 4
+    let paddleX = (canvas.width-paddleWidth)/2;
+    let rightPressed = false;
+    let leftPressed = false;
+
+    function drawPaddle() {
+        ctx.beginPath();
+        ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+        if(rightPressed && paddleX < canvas.width-paddleWidth) {
+            paddleX += paddleSpeed;
+        }
+        else if(leftPressed && paddleX > 0) {
+            paddleX -= paddleSpeed;
+        }
+    }
+
+    function keyDownHandler(e) {
+        if(e.keyCode == 39) {
+            rightPressed = true;
+        }
+        else if(e.keyCode == 37) {
+            leftPressed = true;
+        }
+    }
+
+    function keyUpHandler(e) {
+        if(e.keyCode == 39) {
+            rightPressed = false;
+        }
+        else if(e.keyCode == 37) {
+            leftPressed = false;
+        }
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawBall();
+        drawPaddle();
+    }
+
+    document.addEventListener("keydown", keyDownHandler, false);
+    document.addEventListener("keyup", keyUpHandler, false);
+    setInterval(draw, 1)
+
+</script>
+
+</body>
+</html>
