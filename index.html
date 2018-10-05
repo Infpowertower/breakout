@@ -34,6 +34,7 @@
     }
 
     function moveBall() {
+
         if (xBall + dxBall - radiusBall >= 0 && xBall + dxBall + radiusBall < canvas.width) {
             xBall += dxBall;
         }
@@ -41,8 +42,19 @@
             dxBall *= -1;
         }
 
-        if (yBall + dyBall - radiusBall >= 0 && yBall + dyBall + radiusBall <= canvas.height) {
-            yBall += dyBall;
+        if (yBall + dyBall - radiusBall >= 0) {
+            if (yBall + dyBall + radiusBall > canvas.height) {
+                if (xBall > paddleX && xBall < paddleX + paddleWidth) {
+                    dyBall *= -1;
+                }
+                else {
+                    alert("GAME OVER");
+                    document.location.reload();
+                }
+            }
+            else {
+                yBall += dyBall;
+            }
         }
         else {
             dyBall *= -1;
@@ -51,7 +63,7 @@
 
     const paddleHeight = 10;
     const paddleWidth = 75;
-    const paddleSpeed = 4
+    const paddleSpeed = 4;
     let paddleX = (canvas.width-paddleWidth)/2;
     let rightPressed = false;
     let leftPressed = false;
