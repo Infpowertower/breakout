@@ -48,9 +48,9 @@
         if (yBall + dyBall - radiusBall >= 0) {
             if (yBall + dyBall + radiusBall > canvas.height) {
                 if (xBall > paddleX && xBall < paddleX + paddleWidth) {
-                    dyBall = startSpeed;
+                    dyBall = startSpeed + (dyBall - startSpeed)/2;
                     dyBall *= -1;
-                    dxBall = (xBall-(paddleX+paddleWidth/2))/paddleWidth * Math.abs(dyBall);
+                    dxBall = (xBall-(paddleX+paddleWidth/2))/paddleWidth * Math.abs(dyBall) * 2;
                 }
                 else {
                     if (lives > 0) {
@@ -80,7 +80,7 @@
     //Paddle
     const paddleHeight = 10;
     const paddleWidth = 75;
-    const paddleSpeed = 7;
+    const paddleSpeed = startSpeed + 2;
     let paddleX = (canvas.width-paddleWidth)/2;
     let rightPressed = false;
     let leftPressed = false;
@@ -165,7 +165,7 @@
     function drawLives() {
         ctx.font = "16px Arial";
         ctx.fillStyle = "#44FF44";
-        if (lives === 1) {
+        if (lives === 0) {
             ctx.fillStyle = "#FF0000"
         }
         ctx.fillText("Lives: "+lives, canvas.width-65, 20);
