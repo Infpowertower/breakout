@@ -5,7 +5,7 @@
     <title>Breakout game</title>
     <style>
         * { padding: 0; margin: 0; }
-        canvas { background: #eee; display: block; margin: 0 auto; }
+        canvas { background: #fff; display: block; margin: 0 auto; }
     </style>
 </head>
 <body>
@@ -22,7 +22,7 @@
     let yBall = 3 * canvas.height/4;
     let radiusBall = 10;
     let color = '#' + Math.floor(Math.random()*100) + Math.floor(Math.random()*100) + Math.floor(Math.random()*100);
-    const startSpeed = 0.5;
+    const startSpeed = 1;
     let dxBall = 0;
     let dyBall = startSpeed;
 
@@ -46,12 +46,23 @@
         if (yBall + dyBall - radiusBall >= 0) {
             if (yBall + dyBall + radiusBall > canvas.height) {
                 if (xBall > paddleX && xBall < paddleX + paddleWidth) {
+                    dyBall = startSpeed;
                     dyBall *= -1;
-                    dxBall = (xBall-(paddleX+paddleWidth/2))/paddleWidth;
+                    dxBall = (xBall-(paddleX+paddleWidth/2))/paddleWidth * 2;
                 }
                 else {
-                    alert("GAME OVER");
-                    document.location.reload();
+                    if (lives > 0) {
+                        lives--;
+                        xBall = canvas.width/2;
+                        yBall = 3 * canvas.height/4;
+                        dxBall = 0;
+                        dyBall = startSpeed;
+                        paddleX = (canvas.width-paddleWidth)/2;
+                    }
+                    else {
+                        alert("GAME OVER");
+                        document.location.reload();
+                    }
                 }
             }
             else {
@@ -59,6 +70,7 @@
             }
         }
         else {
+            dyBall *= 1.25;
             dyBall *= -1;
         }
     }
@@ -137,12 +149,24 @@
             }
         }
     }
+
     // Score
     let score = 0;
     function drawScore() {
         ctx.font = "16px Arial";
         ctx.fillStyle = "#000000";
         ctx.fillText("Score: "+score, 8, 20);
+    }
+
+    // Lives
+    let lives = 3;
+    function drawLives() {
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "#44FF44";
+        if (lives === 1) {
+            ctx.fillStyle = "#FF0000"
+        }
+        ctx.fillText("Lives: "+lives, canvas.width-65, 20);
     }
 
     // KeyHandlers
@@ -167,11 +191,15 @@
     // Starting the app
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.rect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = "#000";
+        ctx.stroke();
         drawBall();
         drawPaddle();
         collisionDetection();
         drawBricks();
         drawScore();
+        drawLives();
     }
 
     document.addEventListener("keydown", keyDownHandler, false);
